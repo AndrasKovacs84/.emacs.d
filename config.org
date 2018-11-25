@@ -1,0 +1,654 @@
+#+STARTUP: overview
+#+TITLE: Emacs-config-file
+#+CREATOR: Apha
+
+C-c ' to enter edit mode of source code
+* Terminal and OS related
+** Setting default emacs shell to bash
+#+BEGIN_SRC emacs-lisp
+  (defvar my-term-shell "/bin/bash")
+  (defadvice ansi-term (before force-bash)
+    (interactive (list my-term-shell)))
+  (ad-activate 'ansi-term)
+#+END_SRC
+
+** Bind terminal opening hotkey to super-return
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "<s-return>") 'ansi-term)
+#+END_SRC
+  
+** dmenu 
+Application launcher
+#+BEGIN_SRC emacs-lisp
+  (use-package dmenu
+	:ensure t
+	:bind
+	("C-s-SPC" . 'dmenu))
+#+END_SRC
+
+** symon
+Shows resources at the bottom e.g. cpu %, mem % etc.
+#+BEGIN_SRC emacs-lisp
+  (use-package symon
+	:ensure t
+	:bind
+	("C-s-h" . symon-mode))
+#+END_SRC
+
+** EXWM
+Tiling window manager, it didn't like Ubuntu
+;;#+BEGIN_SRC emacs-lisp
+;;  (use-package exwm
+;;    :ensure t
+;;    :config
+;;    (require 'exwm-config)
+;;    (exwm-config-default))
+;;#+END_SRC
+* Org
+** visual line mode
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook '(lambda () (visual-line-mode 1)))
+#+END_SRC
+
+** Org settings
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'org-mode-hook 'org-indent-mode)
+#+END_SRC
+
+** Org bullets
+Replace the asterisks of orgmode with bullet points
+#+BEGIN_SRC emacs-lisp
+  (use-package org-bullets
+    :ensure t
+    :config
+    (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
+#+END_SRC
+
+** Org source in same window
+#+BEGIN_SRC emacs-lisp
+  (setq org-src-window-setup 'current-window)
+  (add-to-list 'org-structure-template-alist
+		   '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
+#+END_SRC
+
+* Generic tweaks
+** Replace "yes or no" with "y or n"
+#+BEGIN_SRC emacs-lisp
+  (defalias 'yes-or-no-p 'y-or-n-p)
+#+END_SRC
+
+** Disable backup and auto-save files
+#+BEGIN_SRC emacs-lisp
+  (setq make-backup-file nil)
+  (setq auto-save-default nil)
+#+END_SRC
+
+** Set scroll-conservatively
+Otherwise when scrolling, emacs scrolls like half a page or something stupid
+#+BEGIN_SRC emacs-lisp
+  (setq scroll-conservatively 100)
+#+END_SRC
+
+** Change ring-bell-function to avoid heart attack
+   Changes the super annoying bell sound to a subtle mode line flash
+#+BEGIN_SRC emacs-lisp
+  (setq ring-bell-function
+       (lambda ()
+         (let ((orig-fg (face-foreground 'mode-line)))
+           (set-face-foreground 'mode-line "#F2804F")
+           (run-with-idle-timer 0.1 nil
+                                (lambda (fg) (set-face-foreground 'mode-line fg))
+                                orig-fg))))
+#+END_SRC
+
+** Disable startup message
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-message t)
+#+END_SRC
+
+** Subword
+Allows moving to subwords denoted by Capital letter in camelCaseWords
+#+BEGIN_SRC emacs-lisp
+  (global-subword-mode 1)
+#+END_SRC
+
+** Electric pairs (parentheses)
+Auto insert closing parentheses after opening one
+#+BEGIN_SRC emacs-lisp
+  (setq electric-pair-pairs '(
+			      (?\( . ?\))
+			      (?\[ . ?\])
+			      (?\{ . ?\})
+			      ))
+  (electric-pair-mode t)
+#+END_SRC
+
+** Show lines and columns on the modeline
+#+BEGIN_SRC emacs-lisp
+  (line-number-mode 1)
+  (column-number-mode 1)
+#+END_SRC
+
+** Clock
+#+BEGIN_SRC emacs-lisp
+  (setq display-time-24hr-format t)
+  (display-time-mode 1)
+#+END_SRC
+
+** Swiper
+Search tool
+#+BEGIN_SRC emacs-lisp
+  (use-package swiper
+    :ensure t
+    :bind ("C-s" . swiper))
+#+END_SRC
+
+** Mouse scroll line-by-line
+#+BEGIN_SRC emacs-lisp
+  (setq scroll-conservatively 101)
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1)))
+#+END_SRC
+
+** Line numbers
+for newer emacs
+#+BEGIN_SRC emacs-lisp
+  (when (version<= "26.0.50" emacs-version )
+    (global-display-line-numbers-mode))
+#+END_SRC
+
+** TODO Unbind SPC for some things
+Doesn't help...
+#+BEGIN_SRC emacs-lisp
+  (add-hook 'ibuffer-sidebar-mode-hook
+            (lambda()
+              (local-unset-key (kbd "<SPC>"))
+              (evil-leader/set-leader "<SPC>"))
+            )
+#+END_SRC
+
+* IDO
+Interactive do
+** enable ido-mode
+Helps with completion, changing buffers etc. No install needed, just need to enable it.
+#+BEGIN_SRC emacs-lisp
+  (setq ido-enable-flex-matching nil)
+  (setq ido-create-new-buffer 'always)
+  (setq ido-everywhere t)
+  (ido-mode 1)
+#+END_SRC   
+
+** ido-vertical
+Alters ido-mode's functionality to be vertical instead of horizontal
+#+BEGIN_SRC emacs-lisp
+  (use-package ido-vertical-mode
+    :ensure t
+    :init
+    (ido-vertical-mode 1))
+  (setq ido-vertical-define-keys 'C-n-and-C-p-only)
+#+END_SRC
+
+** smex
+acts like ido vertical but for M-x completion
+#+BEGIN_SRC emacs-lisp
+  (use-package smex
+    :ensure t
+    :init (smex-initialize)
+    :bind
+    ("M-x" . smex))
+#+END_SRC
+   
+** switch buffer
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x C-b") 'ido-switch-buffer)
+#+END_SRC
+
+* GUI mode only settings
+** highlight line mode
+#+BEGIN_SRC emacs-lisp
+  (when window-system (global-hl-line-mode t))
+#+END_SRC
+
+** prettify symbols mode
+   Like lambda etc...
+#+BEGIN_SRC emacs-lisp
+  (when window-system (global-prettify-symbols-mode t))
+#+END_SRC
+
+** tool bar, menu bar, scroll bar = off
+#+BEGIN_SRC emacs-lisp
+  (tool-bar-mode -1)
+  (menu-bar-mode -1)
+  (scroll-bar-mode -1)
+#+END_SRC
+
+** dashboard
+#+BEGIN_SRC emacs-lisp
+  (use-package dashboard
+		:ensure t
+		:config
+		(dashboard-setup-startup-hook)
+		(setq dashboard-items '((recents  . 5)
+						  (bookmarks . 5)
+						  ;; requires projectile
+						  ;;(projects . 5)
+						  (agenda . 5)
+						  (registers . 5)))
+		(setq dashboard-banner-logo-title "Welcome to Emacs!"))
+  (setq dashboard-startup-banner "~/.emacs.d/icon_300x300.png")
+#+END_SRC
+
+** spaceline
+Spacemacs style modeline
+#+BEGIN_SRC emacs-lisp
+  (use-package spaceline
+	:ensure t
+	:config
+	(require 'spaceline-config)
+	(setq powerline-default-separator (quote wave))
+	(spaceline-spacemacs-theme))
+#+END_SRC
+
+* Packages
+** which-key
+Shows which keys are available for completion after pressing something
+#+BEGIN_SRC emacs-lisp
+  (use-package which-key
+    :ensure t
+    :init
+    (which-key-mode))
+#+END_SRC
+*** Setting up prefixes to work with evil-leader
+#+BEGIN_SRC emacs-lisp
+  (dolist (pf '("SPC " "M-c "))
+    (which-key-declare-prefixes
+      (concat pf "f") "files/frames"))
+#+END_SRC
+
+** beacon
+A subtle flash effect on cursor to draw attention to it
+#+BEGIN_SRC emacs-lisp
+  (use-package beacon
+    :ensure t
+    :init
+    (beacon-mode 1))
+#+END_SRC
+
+** VsCode Icons
+#+BEGIN_SRC emacs-lisp
+  (use-package vscode-icon
+    :ensure t
+    :commands (vscode-icon-for-file))
+#+END_SRC
+
+** ibuffer-sidebar
+#+BEGIN_SRC emacs-lisp
+  (use-package ibuffer-sidebar
+    :bind (("C-x C-b" . ibuffer-sidebar-toggle-sidebar))
+    :ensure t
+    :commands (ibuffer-sidebar-toggle-sidebar)
+    :config
+    (setq ibuffer-sidebar-use-custom-font t)
+    (setq ibuffer-sidebar-face `(:family "Helvetica" :height 90)))
+#+END_SRC
+
+** toggle both dired-sidebar and ibuffer-sidebar
+#+BEGIN_SRC emacs-lisp
+  (defun sidebar-toggle ()
+    "Toggle both `dired-sidebar' and `ibuffer-sidebar'."
+    (interactive)
+    (dired-sidebar-toggle-sidebar)
+    (ibuffer-sidebar-toggle-sidebar))
+#+END_SRC
+
+** TODO dired-sidebar
+Seems kind of buggy... icons disappear, when leaving home folder, can't reenter...
+Directory edit sidebar to browse for files etc.
+#+BEGIN_SRC emacs-lisp
+  (use-package dired-sidebar
+    :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
+    ;;:bind (("C-x C-n" . sidebar-toggle))
+    :ensure t
+    :commands (dired-sidebar-toggle-sidebar)
+    :init
+    (add-hook 'dired-sidebar-mode-hook
+              (lambda ()
+                (unless (file-remote-p default-directory)
+                  (auto-revert-mode))))
+    :config
+    (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
+    (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
+
+    (setq dired-sidebar-subtree-line-prefix "__")
+    (setq dired-sidebar-theme 'vscode))
+#+END_SRC
+
+* Buffers
+** enable ibuffer
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "C-x b") 'ibuffer)
+#+END_SRC
+
+** always kill current buffer
+C-x k will kill current buffer
+#+BEGIN_SRC emacs-lisp
+  (defun kill-curr-buffer ()
+	(interactive)
+	 (kill-buffer (current-buffer)))
+  (global-set-key (kbd "C-x k") 'kill-curr-buffer)
+#+END_SRC
+
+** kill all buffers
+Ctrl-Meta-Super-k -> deliberately crazy keybinding to avoid painful accidents
+#+BEGIN_SRC emacs-lisp
+  (defun kill-all-buffers ()
+	(interactive)
+	(mapc 'kill-buffer (buffer-list)))
+  (global-set-key (kbd "C-M-s-k") 'kill-all-buffers)
+#+END_SRC
+
+* avy
+Hit keybinding -> enter character to jump to -> hit the highlighted keys to jump there
+#+BEGIN_SRC emacs-lisp
+  (use-package avy
+    :ensure t
+    :bind
+    ("M-s" . avy-goto-char))
+#+END_SRC
+
+* Sudo-edit
+Ask for root pwd to edit buffer
+#+BEGIN_SRC emacs-lisp
+  (use-package sudo-edit
+    :ensure t
+    :bind ("s-e" . sudo-edit))
+#+END_SRC
+
+* Config edit/reload
+** edit
+#+BEGIN_SRC emacs-lisp
+  (defun config-visit()
+    (interactive)
+    (find-file "~/.emacs.d/config.org"))
+  (global-set-key (kbd "C-c e") 'config-visit)
+#+END_SRC
+
+** TODO reload
+After reloading, SPC stops being used for leader key... 
+#+BEGIN_SRC emacs-lisp
+  (defun config-reload()
+    (interactive)
+    (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+  (global-set-key (kbd "C-c r") 'config-reload)
+#+END_SRC
+
+* rainbow
+Colored hexcode representation of colors
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-mode
+	:ensure t
+	:init (add-hook 'prog-mode 'rainbow-mode 1))
+#+END_SRC
+
+Colored parentheses
+#+BEGIN_SRC emacs-lisp
+  (use-package rainbow-delimiters
+	:ensure t
+	:init
+	(rainbow-delimiters-mode 1))
+#+END_SRC
+
+* Windows
+** winum
+Numbered windows to change a la spacemacs
+Currently -> C-x w #
+#+BEGIN_SRC emacs-lisp
+  (use-package winum
+    :ensure t
+    :init
+    (setq winum-auto-setup-mode-line nil)
+    (winum-mode))
+#+END_SRC
+
+* KeybindingsInput
+** tab-indent fix for evil
+Does this actually work...
+#+BEGIN_SRC emacs-lisp
+  (setq-default indent-tabs-mode t)
+  (setq tab-width 4)
+#+END_SRC
+
+** evil-mode
+*** First we need evil-leader
+For rebinding some stuff like leader key etc
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-leader
+    :ensure t
+    :init)
+  (evil-leader/set-leader "<SPC>")
+  (global-evil-leader-mode 1)
+#+END_SRC
+
+*** Then we can enable evil mode for all the things
+Extensible VI Layer - vi keybindings for emacs
+#+BEGIN_SRC emacs-lisp
+  (use-package evil
+    :ensure t
+    :init)
+  (evil-mode 1)
+#+END_SRC
+
+*** evil-leader keybindings
+Make sure to add group prefixes to 
+#+BEGIN_SRC emacs-lisp
+  (evil-leader/set-leader "<SPC>")
+  (evil-leader/set-key
+    "1" 'winum-select-window-1
+    "2" 'winum-select-window-2
+    "3" 'winum-select-window-3
+    "4" 'winum-select-window-4
+    "5" 'winum-select-window-5
+    "6" 'winum-select-window-6
+    "7" 'winum-select-window-7
+    "8" 'winum-select-window-8
+    "9" 'winum-select-window-9
+    "0" 'winum-select-window-10
+    "s" 'avy-goto-char
+    "fc" 'config-visit
+    "ff" 'find-file
+    "fr" 'config-reload
+    "fs" 'sudo-edit
+    "C-b" 'ido-switch-buffer
+    "b" 'ibuffer
+    "k" 'kill-buffer)
+#+END_SRC
+
+*** evil-commentary
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-commentary
+    :ensure t
+    :init)
+  (evil-commentary-mode 1)
+#+END_SRC
+
+** keybindings
+Binding esc to C-g for easier exit key sequences.
+#+BEGIN_SRC emacs-lisp
+  (define-key key-translation-map (kbd "ESC") (kbd "C-g"))
+#+END_SRC
+
+Rebinding C-n and C-p to evil versions.
+#+BEGIN_SRC emacs-lisp
+  ;(define-key key-translation-map (kbd "C-n") (kbd "C-j"))
+  ;(define-key key-translation-map (kbd "C-p") (kbd "C-k"))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;(global-set-key (kbd "C-x") nil)
+  ;(global-set-key (kbd "SPC") 'Control-X-prefix)
+  ;(define-key key-translation-map (kbd "SPC") (kbd "C-x"))
+#+END_SRC
+
+* Auto completion
+** company
+Install...
+#+BEGIN_SRC emacs-lisp
+  (use-package company
+        :ensure t
+        :config
+        (setq company-idle-delay 0)
+        (setq company-minimum-prefix-length 2)
+        :init
+        (add-hook 'after-init-hook 'global-company-mode))
+#+END_SRC
+
+Replace company's M-n / M-p navigation to a bit more evil-mode compliant
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'company
+    (define-key company-active-map (kbd "M-n") nil)
+    (define-key company-active-map (kbd "M-p") nil)
+    (define-key company-active-map (kbd "C-j") #'company-select-next)
+    (define-key company-active-map (kbd "C-k") #'company-select-previous))
+#+END_SRC
+
+Unbind TAB completion so that snippets can work easier
+
+** Yanippet
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :ensure t
+    :config
+    (use-package yasnippet-snippets
+      :ensure t)
+    (yas-reload-all))
+  (yas-global-mode 1)
+#+END_SRC
+
+* Popup kill-ring
+#+BEGIN_SRC emacs-lisp
+  (use-package popup-kill-ring
+    :ensure t
+    :bind ("M-p" . popup-kill-ring))
+#+END_SRC
+
+* Compatibility stuff
+** Company completion & yasnippets
+Trying to get company's completion tab to work with yanippet completion.
+found at: [[https://emacs.stackexchange.com/questions/7908/how-to-make-yasnippet-and-company-work-nicer][yasnippet + company]]
+Might have issues with Magit's use of Tab
+
+#+BEGIN_QUOTE 
+This seems to interfere with magit. Causes tab in magit to raise Buffer is read-only: #<buffer *magit: ~/.emacs.d/*>. Any idea how I can fix that? – zsquare Sep 5 '15 at 10:59 
+@zsquare I don't use magit (I know, I'm nuts) so I can't test this to be sure, but it sounds like magit's keymap for TAB, which binds it to magit-section-toggle, is conflicting with the line (global-set-key [tab] 'tab-indent-or-complete) above. A quick and dirty fix would be to add a check at the beginning of the function tab-indent-or-complete above to see whether we're in magit mode, e.g. for a global variable that gets set on magit-mode-hook. – dodgethesteamroller Sep 8 '15 at 21:53
+#+END_QUOTE
+
+#+BEGIN_SRC emacs-lisp
+  (defun check-expansion ()
+    (save-excursion
+      (if (looking-at "\\_>") t
+        (backward-char 1)
+        (if (looking-at "\\.") t
+      (backward-char 1)
+      (if (looking-at "->") t nil)))))
+
+  (defun do-yas-expand ()
+    (let ((yas/fallback-behavior 'return-nil))
+      (yas/expand)))
+
+  (defun tab-indent-or-complete ()
+    (interactive)
+    (cond
+     ((minibufferp)
+      (minibuffer-complete))
+     (t
+      (indent-for-tab-command)
+      (if (or (not yas/minor-mode)
+          (null (do-yas-expand)))
+      (if (check-expansion)
+          (progn
+            (company-manual-begin)
+            (if (null company-candidates)
+            (progn
+              (company-abort)
+              (indent-for-tab-command)))))))))
+
+  (defun tab-complete-or-next-field ()
+    (interactive)
+    (if (or (not yas/minor-mode)
+        (null (do-yas-expand)))
+        (if company-candidates
+        (company-complete-selection)
+      (if (check-expansion)
+        (progn
+          (company-manual-begin)
+          (if (null company-candidates)
+          (progn
+            (company-abort)
+            (yas-next-field))))
+        (yas-next-field)))))
+
+  (defun expand-snippet-or-complete-selection ()
+    (interactive)
+    (if (or (not yas/minor-mode)
+        (null (do-yas-expand))
+        (company-abort))
+        (company-complete-selection)))
+
+  (defun abort-company-or-yas ()
+    (interactive)
+    (if (null company-candidates)
+        (yas-abort-snippet)
+      (company-abort)))
+
+  (global-set-key [tab] 'tab-indent-or-complete)
+  (global-set-key (kbd "TAB") 'tab-indent-or-complete)
+  (global-set-key [(control return)] 'company-complete-common)
+
+  (define-key company-active-map [tab] 'expand-snippet-or-complete-selection)
+  (define-key company-active-map (kbd "TAB") 'expand-snippet-or-complete-selection)
+
+  (define-key yas-minor-mode-map [tab] nil)
+  (define-key yas-minor-mode-map (kbd "TAB") nil)
+
+  (define-key yas-keymap [tab] 'tab-complete-or-next-field)
+  (define-key yas-keymap (kbd "TAB") 'tab-complete-or-next-field)
+  (define-key yas-keymap [(control tab)] 'yas-next-field)
+  (define-key yas-keymap (kbd "C-g") 'abort-company-or-yas)
+#+END_SRC
+
+* Programming
+** Non-language-specific things
+*** TODO Projectile
+*** TODO LSP
+** C - C++
+*** Coding-style setup
+#+BEGIN_SRC emacs-lisp
+  (setq
+   c-default-style "stroustrup"
+   c-basic-offset 4)
+#+END_SRC
+
+*** company-irony
+company-irony install -> code completion for C++
+#+BEGIN_SRC emacs-lisp
+  (use-package company-irony
+    :ensure t
+    :config
+    (require 'company)
+    (add-to-list 'company-backends 'company-irony))
+#+END_SRC
+
+Setting up irony
+#+BEGIN_SRC emacs-lisp
+  (use-package irony
+    :ensure t
+    :config
+    (add-hook 'c++-mode-hook 'irony-mode)
+    (add-hook 'c-mode-hook 'irony-mode)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+  (with-eval-after-load 'company
+    (add-hook 'c++-mode-hook 'company-mode)
+    (add-hook 'c-mode-hook 'company-mode))
+#+END_SRC
+
+*** 
