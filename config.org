@@ -322,6 +322,13 @@ Directory edit sidebar to browse for files etc.
     (setq dired-sidebar-theme 'vscode))
 #+END_SRC
 
+** silversearcher
+A tool to search in files, similar to swiper
+#+BEGIN_SRC emacs-lisp
+  (use-package silversearcher
+    :ensure t
+    :init)
+#+END_SRC
 * Buffers
 ** enable ibuffer
 #+BEGIN_SRC emacs-lisp
@@ -617,7 +624,7 @@ This seems to interfere with magit. Causes tab in magit to raise Buffer is read-
 
 * Programming
 ** Non-language-specific things
-*** lsp-mode with ccls
+*** TODO lsp-mode with ccls
 Starting to give up on all this crap
 #+BEGIN_SRC emacs-lisp
 
@@ -673,7 +680,7 @@ Starting to give up on all this crap
   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 #+END_SRC
-*** Eglot
+*** TODO Eglot
 #+BEGIN_SRC emacs-lisp
   ;; (use-package eglot
   ;;   :ensure t
