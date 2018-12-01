@@ -623,6 +623,19 @@ This seems to interfere with magit. Causes tab in magit to raise Buffer is read-
 #+END_SRC
 
 * Programming
+** Version control
+*** Install magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit
+    :ensure t
+    :init)
+#+END_SRC
+*** Evil bindings for magit
+#+BEGIN_SRC emacs-lisp
+  (use-package evil-magit
+    :ensure t
+    :init)
+#+END_SRC
 ** Non-language-specific things
 *** TODO lsp-mode with ccls
 Starting to give up on all this crap
@@ -665,6 +678,12 @@ Starting to give up on all this crap
   ;;     'irony-completion-at-point-async)
   ;;   (when projectile-project-name (irony-cdb-json-add-compile-commands-path projectile-project-root (concat projectile-project-root "/build/compile-commands.json"))))
 #+END_SRC
+*** TODO Eglot
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package eglot
+  ;;   :ensure t
+  ;;   :init)
+#+END_SRC
 *** flycheck
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
@@ -679,12 +698,6 @@ Starting to give up on all this crap
   (projectile-mode +1)
   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-#+END_SRC
-*** TODO Eglot
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package eglot
-  ;;   :ensure t
-  ;;   :init)
 #+END_SRC
 ** C - C++
 *** Coding-style setup
@@ -718,30 +731,12 @@ Setting up irony
     (add-hook 'c-mode-hook 'company-mode))
 #+END_SRC
 
-*** company-gtags
+*** TODO company-gtags
+Is this a thing?
 #+BEGIN_SRC emacs-lisp
 
 #+END_SRC
 
-*** emacs-ccls
-#+BEGIN_SRC emacs-lisp
-  ;; (defun +ccls/enable ()
-  ;;  (condition-case nil
-  ;;      (lsp-ccls-enable)
-  ;;    (user-error nil)))
-
-  ;; (use-package ccls
-  ;;   :ensure t
-  ;;    :commands lsp-ccls-enable
-  ;;    :init
-  ;;    (add-hook 'c-mode-hook #'+ccls/enable)
-  ;;    (add-hook 'c++-mode-hook #'+ccls/enable)
-  ;;    (add-hook 'objc-mode-hook #'+ccls/enable)
-  ;;    (add-hook 'cuda-mode-hook #'+ccls/enable)
-  ;;    )
-
-  ;; (setq ccls-executable "~/.emacs.d/backends/ccls/Release/ccls")
-#+END_SRC
 *** ggtags
 Finally something that actually works.
 #+BEGIN_SRC emacs-lisp
@@ -761,6 +756,7 @@ Finally something that actually works.
   (define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
 #+END_SRC
 *** Debugging - gdb
+to make gdb have many fancy windows.
 #+BEGIN_SRC emacs-lisp
   (setq gdb-many-windows t)
 #+END_SRC
