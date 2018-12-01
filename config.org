@@ -539,14 +539,8 @@ Unbind TAB completion so that snippets can work easier
 
 * Compatibility stuff
 ** Company completion & yasnippets
-Trying to get company's completion tab to work with yanippet completion.
-found at: [[https://emacs.stackexchange.com/questions/7908/how-to-make-yasnippet-and-company-work-nicer][yasnippet + company]]
-Might have issues with Magit's use of Tab
-
-#+BEGIN_QUOTE 
-This seems to interfere with magit. Causes tab in magit to raise Buffer is read-only: #<buffer *magit: ~/.emacs.d/*>. Any idea how I can fix that? – zsquare Sep 5 '15 at 10:59 
-@zsquare I don't use magit (I know, I'm nuts) so I can't test this to be sure, but it sounds like magit's keymap for TAB, which binds it to magit-section-toggle, is conflicting with the line (global-set-key [tab] 'tab-indent-or-complete) above. A quick and dirty fix would be to add a check at the beginning of the function tab-indent-or-complete above to see whether we're in magit mode, e.g. for a global variable that gets set on magit-mode-hook. – dodgethesteamroller Sep 8 '15 at 21:53
-#+END_QUOTE
+Fix to mostly help company's completion to work with yasnippet completion. Also has fix
+for magit's tab usage.
 
 #+BEGIN_SRC emacs-lisp
   (defun check-expansion ()
@@ -564,6 +558,9 @@ This seems to interfere with magit. Causes tab in magit to raise Buffer is read-
   (defun tab-indent-or-complete ()
     (interactive)
     (cond
+     ((derived-mode-p 'magit-mode)
+      (magit-section-toggle (magit-current-section)))
+    (cond
      ((minibufferp)
       (minibuffer-complete))
      (t
@@ -576,7 +573,7 @@ This seems to interfere with magit. Causes tab in magit to raise Buffer is read-
             (if (null company-candidates)
             (progn
               (company-abort)
-              (indent-for-tab-command)))))))))
+              (indent-for-tab-command))))))))))
 
   (defun tab-complete-or-next-field ()
     (interactive)
