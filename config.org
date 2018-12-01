@@ -697,6 +697,10 @@ Starting to give up on all this crap
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 #+END_SRC
 ** C - C++
+*** Setting .h as C++ default instead of C
+#+BEGIN_SRC emacs-lisp
+  (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
+#+END_SRC
 *** Coding-style setup
 #+BEGIN_SRC emacs-lisp
   (setq
@@ -728,14 +732,9 @@ Setting up irony
     (add-hook 'c-mode-hook 'company-mode))
 #+END_SRC
 
-*** TODO company-gtags
-Is this a thing?
-#+BEGIN_SRC emacs-lisp
-
-#+END_SRC
-
 *** ggtags
 Finally something that actually works.
+Code indexing, added also to Company backends for auto-completion.
 #+BEGIN_SRC emacs-lisp
   (use-package ggtags
     :ensure t
@@ -745,6 +744,10 @@ Finally something that actually works.
                 (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
                   (ggtags-mode 1))))
   )
+
+  (add-to-list 'company-backends 'company-irony)
+
+  (define-key ggtags-mode-map (kbd "C-c g d") 'ggtags-find-tag-dwim)
   (define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
   (define-key ggtags-mode-map (kbd "C-c g h") 'ggtags-view-tag-history)
   (define-key ggtags-mode-map (kbd "C-c g r") 'ggtags-find-reference)
