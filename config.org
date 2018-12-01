@@ -444,6 +444,16 @@ Extensible VI Layer - vi keybindings for emacs
   (evil-mode 1)
 #+END_SRC
 
+Evil scroll up fix C-u
+#+BEGIN_SRC emacs-lisp
+  (define-key evil-normal-state-map (kbd "C-u") 'evil-scroll-up)
+  (define-key evil-visual-state-map (kbd "C-u") 'evil-scroll-up)
+  (define-key evil-insert-state-map (kbd "C-u")
+    (lambda ()
+      (interactive)
+      (evil-delete (point-at-bol) (point))))
+#+END_SRC
+
 *** evil-leader keybindings
 Make sure to add group prefixes to 
 #+BEGIN_SRC emacs-lisp
@@ -687,6 +697,7 @@ Starting to give up on all this crap
     :ensure t
     :init(global-flycheck-mode))
 #+END_SRC
+
 *** projectile
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
@@ -696,11 +707,13 @@ Starting to give up on all this crap
   (define-key projectile-mode-map (kbd "s-p") 'projectile-command-map)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 #+END_SRC
+
 ** C - C++
 *** Setting .h as C++ default instead of C
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'auto-mode-alist '("\\.h\\'" . c++-mode))
 #+END_SRC
+
 *** Coding-style setup
 #+BEGIN_SRC emacs-lisp
   (setq
@@ -755,6 +768,7 @@ Code indexing, added also to Company backends for auto-completion.
   (define-key ggtags-mode-map (kbd "C-c g c") 'ggtags-create-tags)
   (define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
 #+END_SRC
+
 *** Debugging - gdb
 to make gdb have many fancy windows.
 #+BEGIN_SRC emacs-lisp
