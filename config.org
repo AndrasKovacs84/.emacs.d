@@ -329,6 +329,16 @@ A tool to search in files, similar to swiper
     :ensure t
     :init)
 #+END_SRC
+
+** helm
+#+BEGIN_SRC emacs-lisp
+    (require 'helm)
+    (use-package helm
+      :ensure t
+      :init
+      :bind(("M-x" . helm-M-x)))
+#+END_SRC
+
 * Buffers
 ** enable ibuffer
 #+BEGIN_SRC emacs-lisp
@@ -637,12 +647,14 @@ for magit's tab usage.
     :ensure t
     :init)
 #+END_SRC
+
 *** Evil bindings for magit
 #+BEGIN_SRC emacs-lisp
   (use-package evil-magit
     :ensure t
     :init)
 #+END_SRC
+
 ** Non-language-specific things
 *** TODO lsp-mode with ccls
 Starting to give up on all this crap
