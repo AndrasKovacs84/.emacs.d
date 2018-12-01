@@ -325,7 +325,7 @@ Directory edit sidebar to browse for files etc.
 ** silversearcher
 A tool to search in files, similar to swiper
 #+BEGIN_SRC emacs-lisp
-  (use-package silversearcher
+  (use-package ag
     :ensure t
     :init)
 #+END_SRC
@@ -718,6 +718,11 @@ Setting up irony
     (add-hook 'c-mode-hook 'company-mode))
 #+END_SRC
 
+*** company-gtags
+#+BEGIN_SRC emacs-lisp
+
+#+END_SRC
+
 *** emacs-ccls
 #+BEGIN_SRC emacs-lisp
   ;; (defun +ccls/enable ()
@@ -740,12 +745,22 @@ Setting up irony
 *** ggtags
 Finally something that actually works.
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package ggtags
-  ;; :ensure t
-  ;; :config
-  ;; (add-hook 'c-mode-common-hook
-  ;;           (lambda ()
-  ;;             (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
-  ;;               (ggtags-mode 1))))
-  ;; )
+  (use-package ggtags
+    :ensure t
+    :config
+    (add-hook 'c-mode-common-hook
+              (lambda ()
+                (when (derived-mode-p 'c-mode 'c++-mode 'java-mode)
+                  (ggtags-mode 1))))
+  )
+  (define-key ggtags-mode-map (kbd "C-c g s") 'ggtags-find-other-symbol)
+  (define-key ggtags-mode-map (kbd "C-c g h") 'ggtags-view-tag-history)
+  (define-key ggtags-mode-map (kbd "C-c g r") 'ggtags-find-reference)
+  (define-key ggtags-mode-map (kbd "C-c g f") 'ggtags-find-file)
+  (define-key ggtags-mode-map (kbd "C-c g c") 'ggtags-create-tags)
+  (define-key ggtags-mode-map (kbd "C-c g u") 'ggtags-update-tags)
+#+END_SRC
+*** Debugging - gdb
+#+BEGIN_SRC emacs-lisp
+  (setq gdb-many-windows t)
 #+END_SRC
