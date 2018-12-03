@@ -441,6 +441,12 @@ Use shift-arrow to move to other windows
   (global-set-key (kbd "s-M-j") 'windmove-down)
 #+END_SRC
 
+** sr-speedbar
+#+BEGIN_SRC emacs-lisp
+  (use-package sr-speedbar
+    :ensure t
+    :init)
+#+END_SRC
 * KeybindingsInput
 ** tab-indent fix for evil
 Does this actually work...
