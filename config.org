@@ -440,12 +440,27 @@ Use shift-arrow to move to other windows
   (global-set-key (kbd "s-M-k") 'windmove-up)
   (global-set-key (kbd "s-M-j") 'windmove-down)
 #+END_SRC
+** buffer-move
+from emacswiki
+#+BEGIN_SRC emacs-lisp
+    (use-package buffer-move
+      :ensure t
+      :init)
+  (global-set-key (kbd "C-M-s-k")     'buf-move-up)
+  (global-set-key (kbd "C-M-s-j")   'buf-move-down)
+  (global-set-key (kbd "C-M-s-h")   'buf-move-left)
+  (global-set-key (kbd "C-M-s-l")  'buf-move-right)
 
+#+END_SRC
 ** sr-speedbar
 #+BEGIN_SRC emacs-lisp
   (use-package sr-speedbar
     :ensure t
     :init)
+  (setq sr-speedbar-auto-refresh nil)
+  (setq speedbar-show-unknown-files t) ; show all files
+  (setq speedbar-use-images nil) ; use text for buttons
+  (setq sr-speedbar-right-side nil) ; put on left side
 #+END_SRC
 * KeybindingsInput
 ** tab-indent fix for evil
@@ -601,7 +616,6 @@ for magit's tab usage.
     (cond
      ((derived-mode-p 'magit-mode)
       (magit-section-toggle (magit-current-section)))
-    (cond
      ((minibufferp)
       (minibuffer-complete))
      (t
@@ -614,7 +628,7 @@ for magit's tab usage.
             (if (null company-candidates)
             (progn
               (company-abort)
-              (indent-for-tab-command))))))))))
+              (indent-for-tab-command)))))))))
 
   (defun tab-complete-or-next-field ()
     (interactive)
@@ -741,6 +755,13 @@ Starting to give up on all this crap
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 #+END_SRC
 
+*** indent-guide
+#+BEGIN_SRC emacs-lisp
+  (use-package indent-guide
+    :ensure t
+    :init)
+  (indent-guide-global-mode)
+#+END_SRC
 ** C - C++
 *** Setting .h as C++ default instead of C
 #+BEGIN_SRC emacs-lisp
