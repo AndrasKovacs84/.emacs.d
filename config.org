@@ -44,10 +44,6 @@ Tiling window manager, it didn't like Ubuntu
 ;;    (require 'exwm-config)
 ;;    (exwm-config-default))
 ;;#+END_SRC
-* Org
-** visual line mode
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'org-mode-hook '(lambda () (visual-line-mode 1)))
 #+END_SRC
 
 ** Org settings
@@ -70,7 +66,7 @@ Replace the asterisks of orgmode with bullet points
   (add-to-list 'org-structure-template-alist
 		   '("el" "#+BEGIN_SRC emacs-lisp\n?\n#+END_SRC"))
 #+END_SRC
-
+  
 * Generic tweaks
 ** Replace "yes or no" with "y or n"
 #+BEGIN_SRC emacs-lisp
@@ -332,7 +328,7 @@ A tool to search in files, similar to swiper
 
 ** helm
 #+BEGIN_SRC emacs-lisp
-    (require 'helm)
+    ;;(require 'helm)
     (use-package helm
       :ensure t
       :init
@@ -439,10 +435,10 @@ Use shift-arrow to move to other windows
   (when (fboundp 'windmove-default-keybindings)
     (windmove-default-keybindings))
 
-  (global-set-key (kbd "C-M-h") 'windmove-left)
-  (global-set-key (kbd "C-M-l") 'windmove-right)
-  (global-set-key (kbd "C-M-k") 'windmove-up)
-  (global-set-key (kbd "C-M-j") 'windmove-down)
+  (global-set-key (kbd "s-M-h") 'windmove-left)
+  (global-set-key (kbd "s-M-l") 'windmove-right)
+  (global-set-key (kbd "s-M-k") 'windmove-up)
+  (global-set-key (kbd "s-M-j") 'windmove-down)
 #+END_SRC
 
 * KeybindingsInput
