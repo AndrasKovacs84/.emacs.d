@@ -217,20 +217,28 @@ acts like ido vertical but for M-x completion
   (scroll-bar-mode -1)
 #+END_SRC
 
+** all-the-icons
+#+BEGIN_SRC emacs-lisp
+  (require 'all-the-icons)
+#+END_SRC
+
 ** dashboard
 #+BEGIN_SRC emacs-lisp
   (use-package dashboard
-		:ensure t
-		:config
-		(dashboard-setup-startup-hook)
-		(setq dashboard-items '((recents  . 5)
-						  (bookmarks . 5)
-						  ;; requires projectile
-						  ;;(projects . 5)
-						  (agenda . 5)
-						  (registers . 5)))
-		(setq dashboard-banner-logo-title "Welcome to Emacs!"))
+                :ensure t
+                :config
+                (dashboard-setup-startup-hook)
+                (setq dashboard-items '((recents  . 5)
+                                                  (bookmarks . 5)
+                                                  ;; requires projectile
+                                                  ;;(projects . 5)
+                                                  (agenda . 5)
+                                                  (registers . 5)))
+                (setq dashboard-banner-logo-title "Welcome to Emacs!")
+  (setq initial-buffer-choice (lambda () (get-buffer "*dashboard*"))))
   (setq dashboard-startup-banner "~/.emacs.d/icon_300x300.png")
+  (setq dashboard-set-heading-icons t)
+  (setq dashboard-set-file-icons t)
 #+END_SRC
 
 ** spaceline
