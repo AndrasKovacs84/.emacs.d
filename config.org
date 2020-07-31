@@ -439,6 +439,56 @@ helm-ag for searching stuff
     :init)
 #+END_SRC
 
+** ewal
+#+BEGIN_SRC emacs-lisp
+  (use-package ewal
+    :init (setq ewal-use-built-in-always-p nil
+                ewal-use-built-in-on-failure-p t
+                ewal-built-in-palette "sexy-material"
+                )
+  )
+  (use-package ewal-spacemacs-themes
+    :init (progn
+            (setq spacemacs-theme-underline-parens t
+                  my:rice:font (font-spec
+                                :family "Source Code Pro"
+                                :weight 'semi-bold
+                                :size 14.0))
+            (show-paren-mode +1)
+            (global-hl-line-mode)
+            (set-frame-font my:rice:font nil t)
+            (add-to-list  'default-frame-alist
+                          `(font . ,(font-xlfd-name my:rice:font))))
+    :config (progn
+              (load-theme 'ewal-spacemacs-classic t)
+              (enable-theme 'ewal-spacemacs-classic)))
+  (use-package ewal-evil-cursors
+    :disabled
+    :after (ewal-spacemacs-themes)
+    :config (ewal-evil-cursors-get-colors
+             :apply t :spaceline t))
+  (use-package spaceline
+    :disabled
+    :after (ewal-evil-cursors winum)
+    ;;:init (setq powerline-default-separator nil)
+    :init (setq powerline-default-separator (quote wave))
+    :config (spaceline-spacemacs-theme))
+#+END_SRC
+
+** fzf
+#+BEGIN_SRC emacs-lisp
+  (use-package fzf
+    :ensure t
+    :init)
+#+END_SRC
+
+** ranger
+#+BEGIN_SRC emacs-lisp
+  (use-package ranger
+    :ensure t
+    :init)
+#+END_SRC
+
 * Buffers
 ** enable ibuffer
 #+BEGIN_SRC emacs-lisp
