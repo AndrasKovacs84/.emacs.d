@@ -515,11 +515,18 @@ Ctrl-Meta-Super-k -> deliberately crazy keybinding to avoid painful accidents
 
 * avy
 Hit keybinding -> enter character to jump to -> hit the highlighted keys to jump there
+Need to set the colours again, it seems ewal overwrites them. They work this way.
 #+BEGIN_SRC emacs-lisp
-  (use-package avy
-    :ensure t
-    :bind
-    ("M-s" . avy-goto-char))
+    (use-package avy
+      :ensure t
+      :bind
+      ("M-s" . avy-goto-char)
+      :custom-face
+      (avy-lead-face   ((t (:foreground "white" :background "#e52b50"))))
+      (avy-lead-face-0 ((t (:foreground "white" :background "#4f57f9"))))
+      (avy-lead-face-1 ((t (:foreground "white" :background "gray"))))
+      (avy-lead-face-2 ((t (:foreground "white" :background "#f86bf3"))))
+      )
 #+END_SRC
 
 * Sudo-edit
