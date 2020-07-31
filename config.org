@@ -14,7 +14,7 @@ C-c ' to enter edit mode of source code
 
 ** Bind terminal opening hotkey to super-return
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "<s-return>") 'ansi-term)
+  (global-set-key (kbd "<M-s-return>") 'ansi-term)
 #+END_SRC
   
 ** dmenu 
@@ -23,7 +23,7 @@ Application launcher
   (use-package dmenu
 	:ensure t
 	:bind
-	("C-s-SPC" . 'dmenu))
+	("C-M-SPC" . 'dmenu))
 #+END_SRC
 
 ** symon
@@ -32,7 +32,7 @@ Shows resources at the bottom e.g. cpu %, mem % etc.
   (use-package symon
 	:ensure t
 	:bind
-	("C-s-h" . symon-mode))
+	("C-M-h" . symon-mode))
 #+END_SRC
 
 ** EXWM
@@ -484,10 +484,19 @@ For rebinding some stuff like leader key etc
 *** Then we can enable evil mode for all the things
 Extensible VI Layer - vi keybindings for emacs
 #+BEGIN_SRC emacs-lisp
+  (setq evil-want-keybinding nil)
   (use-package evil
     :ensure t
-    :init)
-  (evil-mode 1)
+    :init
+    (setq evil-want-integration nil)
+    :config
+    (evil-mode 1))
+
+  (use-package evil-collection
+    :after evil
+    :ensure t
+    :config
+    (evil-collection-init))
 #+END_SRC
 
 Evil scroll up fix C-u
@@ -500,21 +509,28 @@ Evil scroll up fix C-u
       (evil-delete (point-at-bol) (point))))
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp
+  (with-eval-after-load 'evil-maps
+    (define-key evil-normal-state-map (kbd "C-n") nil)
+    (define-key evil-normal-state-map (kbd "C-p") nil))
+#+END_SRC
 *** evil-leader keybindings
 Make sure to add group prefixes to 
 #+BEGIN_SRC emacs-lisp
   (evil-leader/set-leader "<SPC>")
   (evil-leader/set-key
-    "1" 'winum-select-window-1
-    "2" 'winum-select-window-2
-    "3" 'winum-select-window-3
-    "4" 'winum-select-window-4
-    "5" 'winum-select-window-5
-    "6" 'winum-select-window-6
-    "7" 'winum-select-window-7
-    "8" 'winum-select-window-8
-    "9" 'winum-select-window-9
-    "0" 'winum-select-window-10
+    "w1" 'winum-select-window-1
+    "w2" 'winum-select-window-2
+    "w3" 'winum-select-window-3
+    "w4" 'winum-select-window-4
+    "w5" 'winum-select-window-5
+    "w6" 'winum-select-window-6
+    "w7" 'winum-select-window-7
+    "w8" 'winum-select-window-8
+    "w9" 'winum-select-window-9
+    "w0" 'winum-select-window-10
+    "oa" 'org-agenda
+    "g" 'golden-ratio-mode
     "s" 'avy-goto-char
     "fc" 'config-visit
     "ff" 'find-file
@@ -522,7 +538,13 @@ Make sure to add group prefixes to
     "fs" 'sudo-edit
     "C-b" 'ido-switch-buffer
     "b" 'ibuffer
-    "k" 'kill-buffer)
+    "k" 'kill-buffer
+    "r" 'md4rd)
+#+END_SRC
+
+*** fix ibuffer to have evil bindings
+#+BEGIN_SRC emacs-lisp
+  (setq evil-emacs-state-modes (delq 'ibuffer-mode evil-emacs-state-modes))
 #+END_SRC
 
 *** evil-commentary
