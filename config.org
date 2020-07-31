@@ -628,7 +628,15 @@ from emacswiki
   (setq speedbar-use-images nil) ; use text for buttons
   (setq sr-speedbar-right-side nil) ; put on left side
 #+END_SRC
-* KeybindingsInput
+
+** Golden ratio
+#+BEGIN_SRC emacs-lisp
+  (use-package golden-ratio
+    :ensure t)
+  (golden-ratio-mode 1)
+#+END_SRC
+
+* Keybindings - Input
 ** tab-indent fix for evil
 Does this actually work...
 #+BEGIN_SRC emacs-lisp
