@@ -257,16 +257,19 @@ Shows which keys are available for completion after pressing something
 #+BEGIN_SRC emacs-lisp
   (dolist (pf '("SPC " "M-c "))
     (which-key-declare-prefixes
-      (concat pf "f") "files/frames"))
+      (concat pf "f") "files/frames"
+      (concat pf "o") "org stuff"
+      (concat pf "w") "change to window"
+      ))
 #+END_SRC
 
 ** beacon
 A subtle flash effect on cursor to draw attention to it
 #+BEGIN_SRC emacs-lisp
-  (use-package beacon
-    :ensure t
-    :init
-    (beacon-mode 1))
+    (use-package beacon
+      :ensure t
+      :init
+      (beacon-mode 1))
 #+END_SRC
 
 ** VsCode Icons
@@ -594,6 +597,7 @@ Use shift-arrow to move to other windows
   (global-set-key (kbd "s-M-k") 'windmove-up)
   (global-set-key (kbd "s-M-j") 'windmove-down)
 #+END_SRC
+
 ** buffer-move
 from emacswiki
 #+BEGIN_SRC emacs-lisp
@@ -604,8 +608,8 @@ from emacswiki
   (global-set-key (kbd "C-M-s-j")   'buf-move-down)
   (global-set-key (kbd "C-M-s-h")   'buf-move-left)
   (global-set-key (kbd "C-M-s-l")  'buf-move-right)
-
 #+END_SRC
+
 ** sr-speedbar
 #+BEGIN_SRC emacs-lisp
   (use-package sr-speedbar
@@ -751,7 +755,7 @@ Replace company's M-n / M-p navigation to a bit more evil-mode compliant
 
 Unbind TAB completion so that snippets can work easier
 
-** Yanippet
+** Yasnippet
 #+BEGIN_SRC emacs-lisp
   (use-package yasnippet
     :ensure t
@@ -908,12 +912,14 @@ Starting to give up on all this crap
   ;;     'irony-completion-at-point-async)
   ;;   (when projectile-project-name (irony-cdb-json-add-compile-commands-path projectile-project-root (concat projectile-project-root "/build/compile-commands.json"))))
 #+END_SRC
+
 *** TODO Eglot
 #+BEGIN_SRC emacs-lisp
   ;; (use-package eglot
   ;;   :ensure t
   ;;   :init)
 #+END_SRC
+
 *** flycheck
 #+BEGIN_SRC emacs-lisp
   (use-package flycheck
@@ -938,6 +944,7 @@ Starting to give up on all this crap
     :init)
   (indent-guide-global-mode)
 #+END_SRC
+
 ** C - C++
 *** Setting .h as C++ default instead of C
 #+BEGIN_SRC emacs-lisp
