@@ -4,9 +4,9 @@
 
 C-c ' to enter edit mode of source code
 * Terminal and OS related
-** Setting default emacs shell to bash
+** Setting default emacs shell to zsh
 #+BEGIN_SRC emacs-lisp
-  (defvar my-term-shell "/bin/bash")
+  (defvar my-term-shell "/bin/zsh")
   (defadvice ansi-term (before force-bash)
     (interactive (list my-term-shell)))
   (ad-activate 'ansi-term)
